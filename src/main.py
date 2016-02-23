@@ -4,7 +4,9 @@ from pyevolve import Selectors
 from pyevolve import Statistics
 from pyevolve import DBAdapters
 import pyevolve
+import matplotlib.pyplot as plt
 import math
+import numpy as np
 
 MAX = 30000
 MIN = -1
@@ -27,8 +29,8 @@ def readFile(fileName):
 
 def processData(data):
 
-    minA2,minA3,minA11,minA14,minA15 = MAX,MAX,MAX,MAX,MAX
-    maxA2,maxA3,maxA11,maxA14,maxA15 = MIN,MIN,MIN,MIN,MIN
+    minA2,minA3,minA8,minA11,minA14,minA15 = MAX,MAX,MAX,MAX,MAX,MAX
+    maxA2,maxA3,maxA8,maxA11,maxA14,maxA15 = MIN,MIN,MIN,MIN,MIN,MIN
     processed = []
 
     for example in data:
@@ -51,16 +53,17 @@ def processData(data):
             minA14,maxA14 = findMinMax(minA14,maxA14,a14)
 
         minA3,maxA3 = findMinMax(minA3,maxA3,a3)
+        minA8,maxA8 = findMinMax(minA8,maxA8,a8)
         minA11,maxA11 = findMinMax(minA11,maxA11,a11)
         # minA14,maxA14 = findMinMax(minA14,maxA14,a14)
         minA15,maxA15 = findMinMax(minA15,maxA15,a15)
 
         a = (a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16)
-        print a11
+        # print a15
         processed.append(a)
 
-    print "Min2: %s Max2: %s, Min3: %s Max3: %s, Min11: %s Max11: %s, Min14: %s Max14: %s, Min15: %s Max15: %s"  \
-    %(minA2,maxA2,minA3,maxA3,minA11,maxA11,minA14,maxA14,minA15,maxA15)
+    # print "Min2: %s Max2: %s, Min3: %s Max3: %s, Min8: %s Max8: %s, Min11: %s Max11: %s, Min14: %s Max14: %s, Min15: %s Max15: %s"  \
+    # %(minA2,maxA2,minA3,maxA3,minA8,maxA8,minA11,maxA11,minA14,maxA14,minA15,maxA15)
     return processed
 
 
@@ -68,7 +71,62 @@ def main():
 
     fileData = readFile("../data/crx.data")
 
-    processData(fileData)
+    data = processData(fileData)
+
+    rangePlus,rangeNegative = calculateRanges(data)
+    graphRange(rangePlus,rangeNegative)
+
+
+def calculateRanges(data):
+
+    numRanges = 2
+    rangePlus = []
+    rangeNegative = []
+
+    for i in range(numRanges):
+        rangePlus.append(0)
+        rangeNegative.append(0)
+
+    for example in data:
+        a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16 = example
+
+
+        if (a15 < 20):
+            if (a16 == "+"):
+                rangePlus[0] += 1
+            else:
+                rangeNegative[0] += 1
+
+        elif (a15 <= 100000):
+            if (a16 == "+"):
+                rangePlus[1] += 1
+            else:
+                rangeNegative[1] += 1
+
+    return rangePlus,rangeNegative
+
+def graphRange(rangePlus,rangeNegative):
+
+    # print rangeList
+    ind = np.arange(2)
+    width = 0.35  
+
+    fig, ax = plt.subplots()
+    barGraph = ax.bar(ind,rangePlus,width,color="g")
+    barGraph2 = ax.bar(ind+width,rangeNegative,width,color="r")
+    ax.set_xticks(ind + width)
+    ax.set_xticklabels(('R1', 'R2'))
+    ax.legend((barGraph[0],barGraph2[0]), ("+","-"))
+    # for i in ind:
+        # print ind
+        # print rangePlus[i]
+    # plt.xlabel('Neuronas')
+    # plt.ylabel('Error')ist
+    # plt.title('Error de la Clasificacion de Datos')
+    # plt.grid(True)
+    plt.savefig("bargraph.png")
+
+
 
 if __name__ == '__main__':
     main()
