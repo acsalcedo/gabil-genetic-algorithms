@@ -7,6 +7,7 @@ import pyevolve
 import matplotlib.pyplot as plt
 import math
 import numpy as np
+import encodeBits as bit
 
 MAX = 30000
 MIN = -1
@@ -73,58 +74,44 @@ def main():
 
     data = processData(fileData)
 
-    rangePlus,rangeNegative = calculateRanges(data)
-    graphRange(rangePlus,rangeNegative)
+    population = getIndividuals(data)
+    # rangePlus,rangeNegative = calculateRanges(data)
+    # graphRange(rangePlus,rangeNegative)
+    print population
 
 
-def calculateRanges(data):
+def getIndividuals(data):
 
-    numRanges = 2
-    rangePlus = []
-    rangeNegative = []
-
-    for i in range(numRanges):
-        rangePlus.append(0)
-        rangeNegative.append(0)
+    population = []
 
     for example in data:
-        a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16 = example
+        a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,c = example
+
+        a1Bit = bit.getBitA1(a1)
+        a2Bit = bit.getBitA2(a2)
+        a3Bit = bit.getBitA3(a3)
+        a4Bit = bit.getBitA4(a4)
+        a5Bit = bit.getBitA5(a5)
+        a6Bit = bit.getBitA6(a6)
+        a7Bit = bit.getBitA7(a7)
+        a8Bit = bit.getBitA8(a8)
+        a9Bit = bit.getBitA9(a9)
+        a10Bit = bit.getBitA10(a10)
+        a11Bit = bit.getBitA11(a11)
+        a12Bit = bit.getBitA12(a12)
+        a13Bit = bit.getBitA13(a13)
+        a14Bit = bit.getBitA14(a14)
+        a15Bit = bit.getBitA15(a15)
+        classBit = bit.getBitClass(c)
+
+        individual = a1Bit+a2Bit+a3Bit+a4Bit+a5Bit+a6Bit+a7Bit+a8Bit+a9Bit+a10Bit+a11Bit+a12Bit+a13Bit+a14Bit+a15Bit+classBit
+
+        population.append(individual)
+
+    return population
 
 
-        if (a15 < 20):
-            if (a16 == "+"):
-                rangePlus[0] += 1
-            else:
-                rangeNegative[0] += 1
 
-        elif (a15 <= 100000):
-            if (a16 == "+"):
-                rangePlus[1] += 1
-            else:
-                rangeNegative[1] += 1
-
-    return rangePlus,rangeNegative
-
-def graphRange(rangePlus,rangeNegative):
-
-    # print rangeList
-    ind = np.arange(2)
-    width = 0.35  
-
-    fig, ax = plt.subplots()
-    barGraph = ax.bar(ind,rangePlus,width,color="g")
-    barGraph2 = ax.bar(ind+width,rangeNegative,width,color="r")
-    ax.set_xticks(ind + width)
-    ax.set_xticklabels(('R1', 'R2'))
-    ax.legend((barGraph[0],barGraph2[0]), ("+","-"))
-    # for i in ind:
-        # print ind
-        # print rangePlus[i]
-    # plt.xlabel('Neuronas')
-    # plt.ylabel('Error')ist
-    # plt.title('Error de la Clasificacion de Datos')
-    # plt.grid(True)
-    plt.savefig("bargraph.png")
 
 
 
