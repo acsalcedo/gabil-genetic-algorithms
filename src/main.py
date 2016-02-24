@@ -3,19 +3,32 @@ from pyevolve import GSimpleGA
 from pyevolve import Selectors
 from pyevolve import Statistics
 from pyevolve import DBAdapters
+from pyevolve import GAllele
 import pyevolve
 import matplotlib.pyplot as plt
 import math
 import numpy as np
 import encodeBits as bit
+import sys, os.path
+import getopt
 
 MAX = 30000
 MIN = -1
+dataFolder = "../data/"
 
-def fitnessFunction():
+#TODO change to  actual fitness function
+def fitnessFunction(chromosome):
 
-    pass
-    #fitness - (correct)**2
+    score = 0.0
+    # correct = 0
+
+    for value in chromosome:
+        if value==0:
+            score += 1
+   
+    # score = correct * correct
+    return score
+
 
 def findMinMax(minA,maxA,a):
     return min(minA,a),max(maxA,a)
@@ -56,29 +69,12 @@ def processData(data):
         minA3,maxA3 = findMinMax(minA3,maxA3,a3)
         minA8,maxA8 = findMinMax(minA8,maxA8,a8)
         minA11,maxA11 = findMinMax(minA11,maxA11,a11)
-        # minA14,maxA14 = findMinMax(minA14,maxA14,a14)
         minA15,maxA15 = findMinMax(minA15,maxA15,a15)
 
         a = (a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16)
-        # print a15
         processed.append(a)
 
-    # print "Min2: %s Max2: %s, Min3: %s Max3: %s, Min8: %s Max8: %s, Min11: %s Max11: %s, Min14: %s Max14: %s, Min15: %s Max15: %s"  \
-    # %(minA2,maxA2,minA3,maxA3,minA8,maxA8,minA11,maxA11,minA14,maxA14,minA15,maxA15)
     return processed
-
-
-def main():
-
-    fileData = readFile("../data/crx.data")
-
-    data = processData(fileData)
-
-    population = getIndividuals(data)
-    # rangePlus,rangeNegative = calculateRanges(data)
-    # graphRange(rangePlus,rangeNegative)
-    print population
-
 
 def getIndividuals(data):
 
@@ -111,9 +107,98 @@ def getIndividuals(data):
     return population
 
 
+def printError():
+    print "\n$ python main.py -f <inputFile> -p <selectionTypeParents> -s <selectionTypeSurvivors> -m <mutationRate> -c <crossoverRate> -x <penalization>"
+    print "\nType of Parent Selection or Survivor Selection:"
+    print "\t1 -> Roulette Wheel"
+    print "\t2 -> Other"
+    print "\nPenalization:"
+    print "\t0 -> No penalization"
+    print "\t1 -> Penalization"
+    print
+    sys.exit(2)
+
+def main(argv):
+
+    try:
+        opts, args = getopt.getopt(argv,"f:p:s:m:c:x:",["file=","parents=","survivors=","mutation=","crossover=","penalization="])
+    except getopt.GetoptError:
+        print "\nIncorrect call. Please try again."
+        printError()
+
+    inputFile = None
+    parentSelection,survivorSelection = 1,1
+    mutationRate,crossoverRate = 0.2,0.8
+    penalize = False
+    
+    for opt, arg in opts:
+
+        if opt in ("-f", "--file"):
+            inputFile = str(arg)
+        if opt in ("-p", "--parents"):
+            parentSelection = int(arg)
+        elif opt in ("-s", "--survivors"):
+            survivorSelection = int(arg)
+        elif opt in ("-m", "--mutation"):
+            mutationRate = float(arg)
+        elif opt in ("-w", "--crossover"):
+            crossoverRate = float(arg)
+        elif opt in ("-x", "--penalization"):
+            if (int(arg) == 1):
+                penalize = True
+
+    if inputFile is None:
+        print "\nPlease enter an input file."
+        printError()
+        sys.exit()
+
+    filePath = dataFolder+inputFile
+
+    if not os.path.isfile(filePath):
+        print "\nThe file '%s' does not exist.\n" %(filePath)
+        sys.exit()
+
+
+    fileData = readFile(filePath)
+
+    data = processData(fileData)
+
+    pyevolve.logEnable()
+
+    #Set size of individual
+    genome = G1DList.G1DList(62)
+
+    #Set range of elements in the list of the invidividual
+    genome.setParams(rangemin=0, rangemax=1)
+
+    #Reads population from file
+    population = getIndividuals(data)
+    
+    #Sets the population from the given data
+    alleleList = GAllele.GAlleleList(population)
+
+    ga = GSimpleGA.GSimpleGA(genome)
+
+    genome.evaluator.set(fitnessFunction) 
+
+    if (parentSelection == 1):
+        ga.selector.set(Selectors.GRouletteWheel)
+    else:
+          ga.selector.set(Selectors.GRankSelector)
+
+
+    ga.setGenerations(300)
+    ga.terminationCriteria.set(GSimpleGA.ConvergenceCriteria)
+
+    sqlite_adapter = DBAdapters.DBSQLite(identify="ex1", resetDB=True)
+    ga.setDBAdapter(sqlite_adapter)
+
+    ga.evolve(freq_stats=20)
+
+    print ga.bestIndividual()
 
 
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
