@@ -15,19 +15,70 @@ import getopt
 MAX = 30000
 MIN = -1
 dataFolder = "../data/"
+dataSet = []
+POPSIZE = 62
+
+
+def splitHypotheses(hypotheses):
+    return [hypotheses[i:i+POPSIZE] for i in xrange(0, len(hypotheses),POPSIZE)]
+
+
+def moreGeneral(atrHyp,atrRule):
+
+    for i in range(len(atrHyp)):
+
+        if atrHyp[i] == 1:
+            continue
+        else:
+            compare = atrRule[i] == 0
+            return compare
+
+    return True
+
 
 #TODO change to  actual fitness function
 def fitnessFunction(chromosome):
 
+    global dataSet
     score = 0.0
-    # correct = 0
+    atributeSizes = [2,3,4,4,3,14,9,3,2,2,3,2,3,3,4,1]
 
-    for value in chromosome:
-        if value==0:
-            score += 1
-   
-    # score = correct * correct
+    hypotheses = splitHypotheses(chromosome)
+
+    wrongRules = 0
+
+    # print hypotheses
+    for hypothesis in hypotheses:
+        
+        for rule in dataSet:
+
+            start = 0
+            
+            for size in atributeSizes:
+
+                atrHyp = hypothesis[start:start+size]
+                atrRule = rule[start:start+size]
+
+                compare = moreGeneral(atrHyp,atrRule)
+                # print "hyp: %s rule: %s compare: %s" %(atrHyp,atrRule,compare)
+                print "hyp: %s rule: %s compare: %s" %(start,start+size,compare)
+
+                if not compare:
+                    wrongRules += 1
+                    break
+
+                start += size 
+
+    # print wrongRules
+    dataSetSize = len(dataSet)
+    rightRules = dataSetSize - wrongRules
+    
+    correct = rightRules / dataSetSize
+    
+    score = correct * correct
     return score
+
+# def crossover():
 
 
 def findMinMax(minA,maxA,a):
@@ -111,7 +162,7 @@ def printError():
     print "\n$ python main.py -f <inputFile> -p <selectionTypeParents> -s <selectionTypeSurvivors> -m <mutationRate> -c <crossoverRate> -x <penalization>"
     print "\nType of Parent Selection or Survivor Selection:"
     print "\t1 -> Roulette Wheel"
-    print "\t2 -> Other"
+    print "\t2 -> Rank Selector"
     print "\nPenalization:"
     print "\t0 -> No penalization"
     print "\t1 -> Penalization"
@@ -141,7 +192,7 @@ def main(argv):
             survivorSelection = int(arg)
         elif opt in ("-m", "--mutation"):
             mutationRate = float(arg)
-        elif opt in ("-w", "--crossover"):
+        elif opt in ("-c", "--crossover"):
             crossoverRate = float(arg)
         elif opt in ("-x", "--penalization"):
             if (int(arg) == 1):
@@ -172,10 +223,13 @@ def main(argv):
     genome.setParams(rangemin=0, rangemax=1)
 
     #Reads population from file
-    population = getIndividuals(data)
+    global dataSet
+    dataSet = getIndividuals(data)
+
+
     
     #Sets the population from the given data
-    alleleList = GAllele.GAlleleList(population)
+    # alleleList = GAllele.GAlleleList(population)
 
     ga = GSimpleGA.GSimpleGA(genome)
 
@@ -187,13 +241,13 @@ def main(argv):
           ga.selector.set(Selectors.GRankSelector)
 
 
-    ga.setGenerations(300)
+    ga.setGenerations(5000)
     ga.terminationCriteria.set(GSimpleGA.ConvergenceCriteria)
 
     sqlite_adapter = DBAdapters.DBSQLite(identify="ex1", resetDB=True)
     ga.setDBAdapter(sqlite_adapter)
 
-    ga.evolve(freq_stats=20)
+    ga.evolve(freq_stats=40)
 
     print ga.bestIndividual()
 
@@ -201,4 +255,5 @@ def main(argv):
 
 
 if __name__ == '__main__':
+
     main(sys.argv[1:])
