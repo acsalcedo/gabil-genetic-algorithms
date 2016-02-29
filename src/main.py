@@ -1,6 +1,6 @@
-# from __future__ import division
-from gabilFunctions import setDataSet, calculateCorrect, fitnessFunction, crossover
-from pyevolve import GSimpleGA, G1DList, Selectors, Statistics, Crossovers
+from gabilFunctions import setDataSet, calculateCorrect, fitnessFunction2, fitnessFunction, crossover, CrossoverDeGabil, CrossoverTwoPoint
+from pyevolve import GSimpleGA, G1DList, Selectors, Statistics, Crossovers, G1DBinaryString
+from G1DListModified import G1DListModified
 from processData import getData
 import matplotlib.pyplot as plt
 import sys, os.path,getopt
@@ -62,16 +62,21 @@ def main(argv):
         sys.exit()
 
     #Set size of individual
-    genome = G1DList.G1DList(62*3)
+    # genome = G1DBinaryString.G1DBinaryString(62*2)
+    # genome = G1DListModified(62)
+    genome = G1DList.G1DList(62)
 
     #Set range of elements in the list of the invidividual
     genome.setParams(rangemin=0, rangemax=1)
 
     #Reads rules from file
-    setDataSet(getData(filePath))
+    data = getData(filePath)
 
-    ga = GSimpleGA.GSimpleGA(genome,seed=333)
-    genome.evaluator.set(fitnessFunction) 
+    # print data
+
+    setDataSet(data)
+    ga = GSimpleGA.GSimpleGA(genome,seed=39)
+    genome.evaluator.set(fitnessFunction2) 
 
     if (parentSelection == 1):
         ga.selector.set(Selectors.GRouletteWheel)
@@ -84,8 +89,10 @@ def main(argv):
     ga.setCrossoverRate(crossoverRate)
     ga.terminationCriteria.set(GSimpleGA.ConvergenceCriteria)
 
-    genome.crossover.set(Crossovers.G1DListCrossoverTwoPoint)
-    # genome.crossover.set(crossover)
+    # genome.crossover.set(Crossovers.G1DBinaryStringXTwoPoint)
+    # genome.crossover.set(Crossovers.G1DListCrossoverTwoPoint)
+    # genome.crossover.set(CrossoverTwoPoint)
+    genome.crossover.set(CrossoverDeGabil)
 
     ga.evolve(freq_stats=20)
 

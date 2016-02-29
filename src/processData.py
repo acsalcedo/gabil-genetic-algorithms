@@ -72,8 +72,22 @@ def getData(fileName):
 
         individual = a1Bit+a2Bit+a3Bit+a4Bit+a5Bit+a6Bit+a7Bit+a8Bit+a9Bit+a10Bit+a11Bit+a12Bit+a13Bit+a14Bit+a15Bit+classBit
 
+
+        dataBit = "".join(str(x) for x in individual)
+    
         data.append(individual)
 
     return data
 
+
+if __name__ == '__main__':
+    data = processData("../data/crx.data")
+
+    for example in data:
+
+        for element in example:
+
+            if element == "?":
+                print example
+                break
 
