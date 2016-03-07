@@ -1,10 +1,18 @@
  Moda de atributo 1  b
  Moda de atributo 2  ?
+ Moda de atributo 3  2.5
  Moda de atributo 4  u
  Moda de atributo 5  g
  Moda de atributo 6  c
  Moda de atributo 7  v
+ Moda de atributo 8  0
+ Moda de atributo 9  t
+ Moda de atributo 10  t
+ Moda de atributo 11  0
+ Moda de atributo 12  f
  Moda de atributo 13  g
+ Moda de atributo 14  00000
+ Moda de atributo 15  0
  Moda de atributo 2 ignorando ?: 
       ?   23.25   19.17   20.42   20.67   23.00   24.50   25.00   18.08 
       7       5       4       4       4       4       4       4       3 

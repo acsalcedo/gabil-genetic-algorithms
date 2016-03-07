@@ -5,9 +5,7 @@ def getBitA1(a1):
     elif (a1 == "a"):
         return [0,1]
     else:
-        return [1,1]
-
-        # return [None]
+        return [1,0]
 
 def getBitA2(a2):
     if (a2 <= 20):
@@ -17,8 +15,7 @@ def getBitA2(a2):
     elif (a2 <= 81):
         return [0,0,1]
     else:
-        return [1,1,1]
-        # return [None]
+        return [0,1,0]
 
 def getBitA3(a3):
     if (a3 <= 0):
@@ -30,8 +27,7 @@ def getBitA3(a3):
     elif (a3 <= 28):
         return [0,0,0,1]
     else:
-        return [1,1,1,1]
-        # return [None]
+        return [0,1,0,0]
 
 def getBitA4(a4):
     if (a4 == "u"):
@@ -43,8 +39,7 @@ def getBitA4(a4):
     elif (a4 == "t"):
         return [0,0,0,1]
     else:
-        return [1,1,1,1]
-        # return [None]
+        return [1,0,0,0]
 
 def getBitA5(a5):
     if (a5 == "g"):
@@ -54,8 +49,7 @@ def getBitA5(a5):
     elif (a5 == "gg"):
         return [0,0,1]
     else:
-        return [1,1,1]
-        # return [None]
+        return [1,0,0]
 
 def getBitA6(a6):
     if (a6 == "c"):
@@ -87,8 +81,7 @@ def getBitA6(a6):
     elif (a6 == "ff"):
         return [0,0,0,0,0,0,0,0,0,0,0,0,0,1]
     else:
-        return [1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-        # return [None]
+        return [1,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 def getBitA7(a7):
     if (a7 == "v"):
@@ -110,8 +103,7 @@ def getBitA7(a7):
     elif (a7 == "o"):
         return [0,0,0,0,0,0,0,0,1]
     else:
-        return [1,1,1,1,1,1,1,1,1]
-        return [None]
+        return [1,0,0,0,0,0,0,0,0]
 
 def getBitA8(a8):
     if (a8 <= 0):
@@ -121,8 +113,7 @@ def getBitA8(a8):
     elif (a8 <= 29):
         return [0,0,1]
     else:
-        return [1,1,1]
-        # return [None]    
+        return [1,0,0]  
 
 def getBitA9(a9):
     if (a9 == "t"):
@@ -130,8 +121,7 @@ def getBitA9(a9):
     elif (a9 == "f"):
         return [0,1]
     else:
-        return [1,1]
-        # return [None]
+        return [1,0]
 
 def getBitA10(a10):
     if (a10 == "t"):
@@ -139,8 +129,7 @@ def getBitA10(a10):
     elif (a10 == "f"):
         return [0,1]
     else:
-        return [1,1]
-        # return [None]
+        return [1,0]
 
 def getBitA11(a11):
     if (a11 <= 0):
@@ -150,8 +139,7 @@ def getBitA11(a11):
     elif (a11 <= 67):
         return [0,0,1]
     else:
-        return [1,1,1]
-        # return [None]
+        return [1,0,0]
 
 def getBitA12(a12):
     if (a12 == "t"):
@@ -159,8 +147,7 @@ def getBitA12(a12):
     elif (a12 == "f"):
         return [0,1]
     else:
-        return [1,1]
-        # return [None]
+        return [0,1]
 
 def getBitA13(a13):
     if (a13 == "g"):
@@ -170,8 +157,7 @@ def getBitA13(a13):
     elif (a13 == "s"):
         return [0,0,1]
     else:
-        return [1,1,1]
-        # return [None]
+        return [1,0,0]
 
 def getBitA14(a14):
     if (a14 <= 100):
@@ -181,8 +167,7 @@ def getBitA14(a14):
     elif (a14 <= 2000):
         return [0,0,1]
     else:
-        return [1,1,1]
-        # return [None]
+        return [1,0,0]
 
 def getBitA15(a15):
     if (a15 <= 0):
@@ -194,8 +179,7 @@ def getBitA15(a15):
     elif (a15 <= 100000):
         return [0,0,0,1]
     else:
-        return [1,1,1,1]
-        # return [None]
+        return [1,0,0,0]
 
 def getBitClass(c):
     if (c == "+"):
@@ -204,4 +188,3 @@ def getBitClass(c):
         return [0]
     else:
         return [1]
-        # return [None]
