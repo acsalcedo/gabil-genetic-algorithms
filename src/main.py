@@ -1,8 +1,8 @@
 from gabilFunctions import setDataSet, correctlyClassified, fitness, crossover
+from processData import getData, saveResults, chooseData, saveData
 from G1DListModified import G1DListModified
 from pyevolve import GSimpleGA, Selectors
-from processData import getData, saveResults
-import sys, os.path, getopt
+import sys, os.path, getopt, time
 import pyevolve
 
 dataFolder = "../data/"
@@ -28,7 +28,7 @@ def printError():
 def main(argv):
 
     try:
-        opts, args = getopt.getopt(argv,"f:p:s:m:c:x:g:n:",["file=","parents=", \
+        opts, args = getopt.getopt(argv,"p:n:s:e:m:c:x:g:i:",["positive=","negative=","parents=", \
             "survivors=","mutation=","crossover=","penalization=","generations=","population="])
     except getopt.GetoptError:
         print "\nIncorrect call. Please try again."
@@ -36,19 +36,21 @@ def main(argv):
 
     parentSelection,survivorSelection = 1,0
     mutationRate,crossoverRate = 0.02,0.8
-    numGenerations = 1500
-    inputFile = None
+    numGenerations = 1000
+    inputPositiveFile,inputNegativeFile = None,None
     penalize = False
     population = 20
     
     for opt, arg in opts:
 
         try: 
-            if opt in ("-f", "--file"):
-                inputFile = str(arg)
-            if opt in ("-p", "--parents"):
+            if opt in ("-p", "--positive"):
+                inputPositiveFile = str(arg)
+            if opt in ("-n", "--negative"):
+                inputNegativeFile = str(arg)
+            elif opt in ("-s", "--parents"):
                 parentSelection = int(arg)
-            elif opt in ("-s", "--survivors"):
+            elif opt in ("-e", "--survivors"):
                 survivorSelection = int(arg)
             elif opt in ("-m", "--mutation"):
                 mutationRate = float(arg)
@@ -59,21 +61,31 @@ def main(argv):
                     penalize = True
             elif opt in ("-g", "--generations"):
                 numGenerations = int(arg)
-            elif opt in ("-n", "--population"):
+            elif opt in ("-i", "--population"):
                 population = int(arg)
         except ValueError:
             pass
 
 
-    if inputFile is None:
-        print "\nPlease enter an input file."
+    if inputPositiveFile is None:
+        print "\nPlease enter an input file with the positive classes."
         printError()
         sys.exit()
 
-    filePath = dataFolder+inputFile
+    if inputNegativeFile is None:
+        print "\nPlease enter an input file with the negative classes."
+        printError()
+        sys.exit()
 
-    if not os.path.isfile(filePath):
-        print "\nThe file '%s' does not exist.\n" %(filePath)
+    filePathPositive = dataFolder+inputPositiveFile
+    filePathNegative = dataFolder+inputNegativeFile
+
+    if not os.path.isfile(filePathNegative):
+        print "\nThe file '%s' does not exist.\n" %(filePathNegative)
+        sys.exit()
+    
+    if not os.path.isfile(filePathPositive):
+        print "\nThe file '%s' does not exist.\n" %(filePathPositive)
         sys.exit()
 
     genome = G1DListModified(62*8) #Set size of individual
@@ -85,9 +97,24 @@ def main(argv):
     genome.crossover.set(crossover)
 
     #Reads rules from file
-    data = getData(filePath)
-    setDataSet(data)
+    dataPositive = getData(filePathPositive)
+    dataNegative = getData(filePathNegative)
+    
+    trainPositive,testPositive = chooseData(dataPositive)
+    trainNegative,testNegative = chooseData(dataNegative)
 
+    trainData = trainPositive+trainNegative
+    testData = testPositive+testNegative
+
+    timestr = time.strftime("%Y%m%d%H%M%S")
+
+    extension = timestr+"_cross"+str(crossoverRate)+"_mut"+str(mutationRate) \
+    + "_par"+str(parentSelection)+"_surv"+str(survivorSelection)+"_pop"+str(population) \
+    + "_gen"+str(numGenerations)
+
+    saveData(trainData,testData,extension)
+
+    setDataSet(trainData,testData)
     ga = GSimpleGA.GSimpleGA(genome)
     # ga = GSimpleGA.GSimpleGA(genome,seed=39)
     ga.setGenerations(numGenerations)
@@ -134,7 +161,7 @@ def main(argv):
     + "_par"+str(parentSelection)+"_surv"+str(survivorSelection)+"_pop"+str(population) \
     + "_gen"+str(numGenerations)
 
-    saveResults(testFile,best.genomeList,correct)
+    saveResults(testFile,best.genomeList,correct,timestr)
 
 
 

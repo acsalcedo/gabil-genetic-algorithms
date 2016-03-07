@@ -2,15 +2,17 @@ from pyevolve import Util
 import random
 
 global dataSet
+global testSet
 
 #List of the sizes of the atributes of each hypothesis/rule.
 atributeSizes = [2,3,4,4,3,14,9,3,2,2,3,2,3,3,4]
 RULESIZE = 62
 
 #Sets data set.
-def setDataSet(data):
-    global dataSet
+def setDataSet(data,test):
+    global dataSet,testSet
     dataSet = data
+    testSet = test
 
 #Splits a set of hypotheses into a list of hypothesis.
 def splitHypotheses(hypotheses):
@@ -74,7 +76,7 @@ def fitness(chromosome):
     if correct < 0 or len(chromosome) > 62*20: # or len(chromosome) < 62*2:
         score = 0.0
 
-    return score #/ float(len(chromosome)) 
+    return score # * float(len(chromosome)) (factor a multiplicar) 
 
 #Verifies if a set of hypothesis classify correctly an example of the data set.
 def classify(data,best):
@@ -96,10 +98,10 @@ def classify(data,best):
 def correctlyClassified(best):
 
     correct = 0
-    for example in dataSet:
+    for example in testSet:
         correct += classify(example,best)
 
-    percentage = correct / float(len(dataSet))
+    percentage = correct / float(len(testSet))
     return correct, percentage*100
 
 #Crossover function, using two point crossover.

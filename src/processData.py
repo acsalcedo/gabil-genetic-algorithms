@@ -1,6 +1,7 @@
 import encodeBits as bit
 import os.path
 import json
+import random
 
 MAX = 30000
 MIN = -1
@@ -82,7 +83,35 @@ def getData(fileName):
     return data
 
 
-def saveResults(file,result,correct):
+def chooseData(data):
+
+    size = len(data)
+
+    amountToChoose = size*0.7
+    lst = []
+
+    for i in range(0,int(amountToChoose)):
+        index = random.randrange(0,size)
+        example = data.pop(index)
+        lst.append(example)
+        size -= 1
+
+    return lst, data
+
+
+def saveData(train,test,extension):
+
+    trainFile = "../data/train/"+extension
+    testFile = "../data/test/"+extension
+
+    with open(trainFile, mode='w') as f:
+        json.dump(train,f)
+
+    with open(testFile, mode='w') as f:
+        json.dump(test,f)
+
+
+def saveResults(file,result,correct,timestr):
     
     data = []
 
@@ -94,7 +123,7 @@ def saveResults(file,result,correct):
         data = json.load(f)
 
     with open(file, mode='w') as f:
-        entry = {'hypothesis': result,'correct': correct}
+        entry = {'time': timestr,'correct': correct,'hypothesis': result}
         data.append(entry)
         json.dump(data,f)
 
