@@ -6,7 +6,7 @@ Proyecto de algoritmos genéticos utilizando GABIL - Inteligencia Artificial 2
 En la carpeta _src/_ ejectutar el siguiente comando:
 
 ```
-$ python main.py -f <inputFile> -p <selectionTypeParents> -s <selectionTypeSurvivors> -m <mutationRate> -c <crossoverRate> -x <penalization>
+$ python main.py -f <inputFile> -p <selectionTypeParents> -s <selectionTypeSurvivors> -m <mutationRate> -c <crossoverRate> -x <penalization> -g <generations> -n <populationSize>
 ```
 
 Donde:
@@ -15,12 +15,13 @@ Donde:
 2. **Selection Type Parents**: El tipo de selección de padres.
 
   * 1 -> Rueda de ruleta.
-  * 2 -> Otro.
+  * 2 -> Selección por rango.
+  * 3 -> Selcción por torneo. 
 
 3. **Selection Type Survivors**: El tipo de selección de sobrevivientes.
 
-  * 1 -> Rueda de ruleta.
-  * 2 -> Otro.
+  * 0 -> Sin elitismo.
+  * 1 -> Con elitismo.
 
 4. **Mutation Rate**: La tasa de mutación.
 5. **Crossover Rate**: La tasa de crossover.
@@ -28,6 +29,10 @@ Donde:
 
   * 0 -> No hay penalización.
   * 1 -> Hay penalización.
+ 
+7. **Generations**: Número de generaciones.
+8. **Population Size**: Tamaño de la población.
+  
 
 #### Ejemplos de corridas:
 
