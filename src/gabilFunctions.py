@@ -1,4 +1,3 @@
-from random import randint as rand_randint
 from pyevolve import Util
 import random
 
@@ -18,7 +17,7 @@ def splitHypotheses(hypotheses):
     return [hypotheses[i:i+RULESIZE] for i in xrange(0, len(hypotheses),RULESIZE)]
 
 #Verifies if the atribute of the hypothesis is more general than the rule.
-def moreGeneral(atrHyp,atrRule):
+def isMoreGeneral(atrHyp,atrRule):
 
     for i in range(len(atrHyp)):
         if atrHyp[i] != atrRule[i] and atrHyp[i] == 0:
@@ -26,7 +25,7 @@ def moreGeneral(atrHyp,atrRule):
     return True
 
 #Verifies if a hypothesis matches with the rule.
-def match(hypothesis,rule):
+def isMatch(hypothesis,rule):
 
     start = 0
     for size in atributeSizes:
@@ -35,7 +34,7 @@ def match(hypothesis,rule):
         atrHyp = hypothesis[start:end]
         atrRule = rule[start:end]
 
-        compare =  moreGeneral(atrHyp,atrRule)
+        compare =  isMoreGeneral(atrHyp,atrRule)
 
         if not compare:
             return False
@@ -44,11 +43,11 @@ def match(hypothesis,rule):
     return True
 
 #Verifies if the hypothesis and rule belong to the same class.
-def correctClass(hypothesis,rule):
+def isCorrectClass(hypothesis,rule):
     return hypothesis[61] == rule[61]
 
 #Fitness function for an individual.
-def fitnessFunction(chromosome):
+def fitness(chromosome):
 
     hypotheses = splitHypotheses(chromosome)
     score = 0.0
@@ -58,9 +57,9 @@ def fitnessFunction(chromosome):
         
         for hypothesis in hypotheses:
 
-            if match(hypothesis,rule):
+            if isMatch(hypothesis,rule):
 
-                if correctClass(hypothesis,rule):
+                if isCorrectClass(hypothesis,rule):
                     correct += 1
                     break
                 else:
@@ -85,23 +84,23 @@ def classify(data,best):
     
     for hypothesis in hypotheses:
 
-        if match(hypothesis,data):
+        if isMatch(hypothesis,data):
 
-            if correctClass(hypothesis,data):
+            if isCorrectClass(hypothesis,data):
                 return 1
             else:
                 return 0 
     return 0 
 
 #Calculates the number of examples correctly classified.
-def calculateCorrect(best):
+def correctlyClassified(best):
 
     correct = 0
     for example in dataSet:
         correct += classify(example,best)
 
     percentage = correct / float(len(dataSet))
-    return percentage*100
+    return correct, percentage*100
 
 #Crossover function, using two point crossover.
 def crossover(genome, **args):

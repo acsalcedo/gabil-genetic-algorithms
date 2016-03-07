@@ -1,21 +1,20 @@
-from gabilFunctions import setDataSet, calculateCorrect, fitnessFunction, crossover
-from pyevolve import GSimpleGA, Selectors, Statistics, Crossovers, G1DBinaryString
+from gabilFunctions import setDataSet, correctlyClassified, fitness, crossover
 from G1DListModified import G1DListModified
-from pyevolve import Interaction as it
-from processData import getData
-import matplotlib.pyplot as plt
-import sys, os.path,getopt
+from pyevolve import GSimpleGA, Selectors
+from processData import getData, saveResults
+import sys, os.path, getopt
 import pyevolve
 
-
 dataFolder = "../data/"
+testFolder = "../tests/"
 
 def printError():
     print "\n$ python main.py -f <inputFile> -p <selectionTypeParents> -s <selectionTypeSurvivors> ",
     print "-m <mutationRate> -c <crossoverRate> -x <penalization> -g <generations> -n <populationSize>"
     print "\nType of Parent Selection:"
     print "\t1 -> Roulette Wheel"
-    print "\t2 -> Tournament Selector"
+    print "\t2 -> Rank Selector"
+    print "\t3 -> Tournament Selector"
     print "\nType of Survivor Selection:"
     print "\t0 -> No Elitism"
     print "\t1 -> Elitism"
@@ -82,21 +81,22 @@ def main(argv):
     #Set range of elements in the list of the invidividual
     genome.setParams(rangemin=0, rangemax=1)
 
-    genome.evaluator.set(fitnessFunction)
+    genome.evaluator.set(fitness)
     genome.crossover.set(crossover)
 
     #Reads rules from file
     data = getData(filePath)
     setDataSet(data)
 
-    ga = GSimpleGA.GSimpleGA(genome,seed=39)
+    ga = GSimpleGA.GSimpleGA(genome)
+    # ga = GSimpleGA.GSimpleGA(genome,seed=39)
     ga.setGenerations(numGenerations)
     ga.setPopulationSize(population)
     ga.setMutationRate(mutationRate)
     ga.setCrossoverRate(crossoverRate)
-    ga.terminationCriteria.set(GSimpleGA.ConvergenceCriteria)
+    # ga.terminationCriteria.set(GSimpleGA.ConvergenceCriteria)
     
-    print "------------SETTINGS FOR GABIL------------"
+    print "------------------------ SETTINGS FOR GABIL ------------------------"
     print "Crossover Rate: %s" %(crossoverRate)
     print "Mutation Rate: %s" %(mutationRate)
     print "Population Size: %s" %(population)
@@ -118,19 +118,33 @@ def main(argv):
     else:
         print "Survivor Selection: Elitism is not set."
 
-    print "------------------------------------------"
+    print "--------------------------------------------------------------------"
 
     ga.evolve(freq_stats=20)
 
     best = ga.bestIndividual()
-    print best
+    print "------------------ BEST INDIVIDUAL IN POPULATION -------------------\n%" 
+    print best,
+    print "--------------------------------------------------------------------"
 
-    pop = ga.getPopulation()
-    lst = it.plotHistPopScore(pop)
-    plt.savefig("plot.png")
+    correct, percentage = correctlyClassified(best)
+    print "Number of examples correctly classified: %s, Percentage: %s" %(correct,percentage)
 
-    print ga.getStatistics()
-    print "Percentage: %s" %(calculateCorrect(best))
+    testFile = testFolder+"cross"+str(crossoverRate)+"_mut"+str(mutationRate) \
+    + "_par"+str(parentSelection)+"_surv"+str(survivorSelection)+"_pop"+str(population) \
+    + "_gen"+str(numGenerations)
+
+    saveResults(testFile,best.genomeList,correct)
+
+
+
+    # with open(testFile, mode='r') as f:
+    #     data = json.load(f)
+    #     avg = 0
+    #     for example in data:
+    #         avg += example['correct']
+
+    #     print avg
 
 if __name__ == '__main__':
     main(sys.argv[1:])

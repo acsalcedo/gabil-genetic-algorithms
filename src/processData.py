@@ -1,4 +1,6 @@
 import encodeBits as bit
+import os.path
+import json
 
 MAX = 30000
 MIN = -1
@@ -78,6 +80,23 @@ def getData(fileName):
         data.append(individual)
 
     return data
+
+
+def saveResults(file,result,correct):
+    
+    data = []
+
+    if not os.path.isfile(file):
+        with open(file, mode='w') as f:
+            json.dump([], f)
+            
+    with open(file, mode='r') as f:
+        data = json.load(f)
+
+    with open(file, mode='w') as f:
+        entry = {'hypothesis': result,'correct': correct}
+        data.append(entry)
+        json.dump(data,f)
 
 
 if __name__ == '__main__':
