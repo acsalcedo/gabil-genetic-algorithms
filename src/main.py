@@ -9,8 +9,8 @@ dataFolder = "../data/"
 testFolder = "../tests/"
 
 def printError():
-    print "\n$ python main.py -f <inputFile> -p <selectionTypeParents> -s <selectionTypeSurvivors> ",
-    print "-m <mutationRate> -c <crossoverRate> -x <penalization> -g <generations> -n <populationSize>"
+    print "\n$ python main.py -p <inputPositiveFile> -n <inputNegativeFile> -s <selectionTypeParents> -e <selectionTypeSurvivors> ",
+    print "-m <mutationRate> -c <crossoverRate> -x <penalization> -g <generations> -i <populationSize>"
     print "\nType of Parent Selection:"
     print "\t1 -> Roulette Wheel"
     print "\t2 -> Rank Selector"
@@ -35,12 +35,12 @@ def main(argv):
         printError()
 
     parentSelection,survivorSelection = 1,0
-    mutationRate,crossoverRate = 0.02,0.8
+    mutationRate,crossoverRate = 0.01,0.8
     numGenerations = 1000
     inputPositiveFile,inputNegativeFile = None,None
     penalize = False
     population = 20
-    
+
     for opt, arg in opts:
 
         try: 
