@@ -1,4 +1,4 @@
-from gabilFunctions import setDataSet, correctlyClassified, fitness, crossover
+from gabilFunctions import setDataSet, correctlyClassified, fitness, crossover, fitness_penalization
 from processData import getData, saveResults, chooseData, saveData
 from G1DListModified import G1DListModified
 from pyevolve import GSimpleGA, Selectors
@@ -93,7 +93,12 @@ def main(argv):
     #Set range of elements in the list of the invidividual
     genome.setParams(rangemin=0, rangemax=1)
 
-    genome.evaluator.set(fitness)
+
+    if penalize:
+        genome.evaluator.set(fitness_penalization)
+    else:
+        genome.evaluator.set(fitness)
+
     genome.crossover.set(crossover)
 
     #Reads rules from file
@@ -144,6 +149,11 @@ def main(argv):
         print "Survivor Selection: Elitism is set."
     else:
         print "Survivor Selection: Elitism is not set."
+
+    if penalize:
+        print "Penalization is set."
+    else:
+        print "Penalization is not set."
 
     print "--------------------------------------------------------------------"
 
