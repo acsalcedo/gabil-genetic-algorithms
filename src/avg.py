@@ -13,6 +13,7 @@ for example in data:
     if example['correct'] == 0:
 	continue
     cont += 1
+
     avg += example['correct']
     with open("../data/test/"+example['time']+"_"+extension, mode='r') as f:
         data2 = json.load(f)
