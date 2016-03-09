@@ -7,6 +7,7 @@ global testSet
 #List of the sizes of the atributes of each hypothesis/rule.
 atributeSizes = [2,3,4,4,3,14,9,3,2,2,3,2,3,3,4]
 RULESIZE = 62
+FEATURES = 15
 
 #Sets data set.
 def setDataSet(data,test):
@@ -72,6 +73,41 @@ def fitness(chromosome):
     
     correct = correct / float(dataSetSize)
     score = correct * correct
+    
+    if correct < 0 or len(chromosome) > 62*20: # or len(chromosome) < 62*2:
+        score = 0.0
+
+    return score # * float(len(chromosome)) (factor a multiplicar) 
+
+
+def fitness_penalization(chromosome):
+
+    hypotheses = splitHypotheses(chromosome)
+    score = 0.0
+    correct = 0
+
+    for rule in dataSet:
+        
+        for hypothesis in hypotheses:
+
+            if isMatch(hypothesis,rule):
+
+                if isCorrectClass(hypothesis,rule):
+                    correct += 1
+                    break
+                else:
+                    correct -= 1
+
+
+    dataSetSize = len(dataSet)
+    
+    correct = correct / float(dataSetSize)
+    score = correct * correct
+
+    oneCount = chromosome.count(1)
+
+    if (oneCount > (FEATURES + 0.5*RULESIZE)):
+        score *= 0.2
     
     if correct < 0 or len(chromosome) > 62*20: # or len(chromosome) < 62*2:
         score = 0.0
