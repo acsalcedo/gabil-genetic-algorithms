@@ -6,42 +6,53 @@ Proyecto de algoritmos genéticos utilizando GABIL - Inteligencia Artificial 2
 En la carpeta _src/_ ejectutar el siguiente comando:
 
 ```
-$ python main.py -f <inputFile> -p <selectionTypeParents> -s <selectionTypeSurvivors> -m <mutationRate> -c <crossoverRate> -x <penalization> -g <generations> -n <populationSize>
+$ python main.py -p <inputPositiveFile> -n <inputNegativeFile> -s <selectionTypeParents> -e <selectionTypeSurvivors> -m <mutationRate> -c <crossoverRate> -x <penalization> -g <generations> -i <populationSize>
 ```
 
 Donde:
 
-1. **Input file**: El archivo a clasificar.
-2. **Selection Type Parents**: El tipo de selección de padres.
+1. **Input Positive File**: El archivo de los datos de la clase positiva (+).
+2. **Input Negative File**: El archivo de los datos de la clase negativa (-).
+3. **Selection Type Parents**: El tipo de selección de padres.
 
   * 1 -> Rueda de ruleta.
   * 2 -> Selección por rango.
   * 3 -> Selcción por torneo. 
 
-3. **Selection Type Survivors**: El tipo de selección de sobrevivientes.
+4. **Selection Type Survivors**: El tipo de selección de sobrevivientes.
 
   * 0 -> Sin elitismo.
   * 1 -> Con elitismo.
 
-4. **Mutation Rate**: La tasa de mutación.
-5. **Crossover Rate**: La tasa de crossover.
-6. **Penalization**: Opción para penalizar o no.
+5. **Mutation Rate**: La tasa de mutación.
+6. **Crossover Rate**: La tasa de crossover.
+7. **Penalization**: Opción para penalizar o no.
 
   * 0 -> No hay penalización.
   * 1 -> Hay penalización.
  
-7. **Generations**: Número de generaciones.
-8. **Population Size**: Tamaño de la población.
+8. **Generations**: Número de generaciones.
+9. **Population Size**: Tamaño de la población.
   
+Los únicos parámetros obligatorios son los de los archivos de datos. Los valores por defecto son los siguientes:
+
+* **Crossover**: 0.8
+* **Mutuación**: 0.01
+* **Selección de padres**: rueda ruleta
+* **Selección de sobrevivientes**: sin elitismo.
+* **Penalización**: sin penalización.
+* **Generaciones**: 1000
+* **Población**: 20
+
 
 #### Ejemplos de corridas:
 
 
 ```
-$ python main.py -f crx.data
+$ python main.py -p positive.data -n negative.data
 ```
 ```
-$ python main.py -f crx.data -p 1 -s 1 -m 0.2 -c 0.8 -x 0
+$ python main.py -p positive.data -n negative.data -c 0.8 -m 0.01 -e 1 -i 60 -s 2
 ```
 
 ### Organización del Repositorio
@@ -53,3 +64,5 @@ _docs/_ : Documentos necesarios para el proyecto.
 _graphs/_ : Gráficos que se realizaron para el informe.
 
 _src/_ : Donde está el código fuente.
+
+_tests/_: Directorio con los resultados de todas las corridas.
