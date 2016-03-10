@@ -115,7 +115,7 @@ def main(argv):
 
     extension = timestr+"_cross"+str(crossoverRate)+"_mut"+str(mutationRate) \
     + "_par"+str(parentSelection)+"_surv"+str(survivorSelection)+"_pop"+str(population) \
-    + "_gen"+str(numGenerations)
+    + "_gen"+str(numGenerations) + "_penal"+str(penalize)
 
     saveData(trainData,testData,extension)
 
@@ -169,7 +169,7 @@ def main(argv):
 
     testFile = testFolder+"cross"+str(crossoverRate)+"_mut"+str(mutationRate) \
     + "_par"+str(parentSelection)+"_surv"+str(survivorSelection)+"_pop"+str(population) \
-    + "_gen"+str(numGenerations)
+    + "_gen"+str(numGenerations) + "_penal"+str(penalize)
 
     saveResults(testFile,best.genomeList,correct,timestr)
 
