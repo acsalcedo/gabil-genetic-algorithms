@@ -94,3 +94,9 @@ class G1DListModified(GenomeBase):
 
    def getListSize(self):
       return self.listSize
+
+   def getGenomeList(self):
+      return self.genomeList
+
+   def count(self,elem):
+      return self.genomeList.count(elem)

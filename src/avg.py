@@ -1,7 +1,8 @@
 import json
-cross = "0.9"
+cross = "0.8"
 mut = "0.01"
-extension = "cross"+cross+"_mut"+mut+"_par1_surv0_pop20_gen1000"
+extension = "cross"+cross+"_mut"+mut+"_par2_surv1_pop60_gen1000_penalTrue"
+# extension = "cross"+cross+"_mut"+mut+"_par2_surv1_pop80_gen1000"
 testFile = open("../tests/"+extension, mode='r')
 data = json.load(testFile)
 avg = 0
@@ -10,8 +11,9 @@ cont = 0
 print "cross: " + cross
 print "mut: " + mut
 for example in data:
+    
     if example['correct'] == 0:
-	continue
+		continue
     cont += 1
 
     avg += example['correct']

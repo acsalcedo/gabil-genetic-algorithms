@@ -1,4 +1,5 @@
 from pyevolve import Util
+# from G1DListModified import G1DListModified
 import random
 
 global dataSet
@@ -106,10 +107,12 @@ def fitness_penalization(chromosome):
 
     oneCount = chromosome.count(1)
 
-    if (oneCount > (FEATURES + 0.5*RULESIZE)):
+    length = len(chromosome)
+
+    if oneCount > (FEATURES + 0.5*length):
         score *= 0.2
     
-    if correct < 0 or len(chromosome) > 62*20: # or len(chromosome) < 62*2:
+    if correct < 0 or length > 62*20: # or len(chromosome) < 62*2:
         score = 0.0
 
     return score # * float(len(chromosome)) (factor a multiplicar) 
