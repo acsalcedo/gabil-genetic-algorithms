@@ -1,24 +1,38 @@
 import json
-cross = "0.9"
-mut = "0.01"
-extension = "cross"+cross+"_mut"+mut+"_par1_surv0_pop20_gen1000"
+
+crossover = "0.8"
+mutation = "0.01"
+parent = "2"
+survivor = "1"
+population = "60"
+generation = "1000"
+
+extension = "cross" + crossover + "_mut" + mutation + "_par" + parent + "_surv" + survivor \
+            + "_pop" + population + "_gen" + generation
+
 testFile = open("../tests/"+extension, mode='r')
 data = json.load(testFile)
-avg = 0
-num = 0
-cont = 0
-print "cross: " + cross
-print "mut: " + mut
+
+avg,num,cont = 0,0,0
+
+print "Crossover: " + crossover
+print "Mutation: " + mutation
+print "Parent selection: " + parent
+print "Survivor selection: " + survivor
+print "Population: " + population
+print "Generations: " + generation
+
 for example in data:
+    
     if example['correct'] == 0:
-	continue
+    	continue
     cont += 1
 
     avg += example['correct']
     with open("../data/test/"+example['time']+"_"+extension, mode='r') as f:
-        data2 = json.load(f)
-        num += len(data2)
-	
+        data = json.load(f)
+        num += len(data)
 
-print avg / float(num)
-print avg / float(cont)
+print "--------------------------------------"
+print "Percentage: %s" %((avg / float(num))*100)
+print "Correctly classified: %s" %(avg / float(cont))

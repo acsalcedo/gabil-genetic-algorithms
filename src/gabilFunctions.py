@@ -74,12 +74,14 @@ def fitness(chromosome):
     correct = correct / float(dataSetSize)
     score = correct * correct
     
-    if correct < 0 or len(chromosome) > 62*20: # or len(chromosome) < 62*2:
+    #Penalizes by default if the individual is too big.
+    if correct < 0 or len(chromosome) > 62*20:
         score = 0.0
 
-    return score # * float(len(chromosome)) (factor a multiplicar) 
+    return score
 
-
+#Fitness function for an individual with penalization.
+#If there are too many 1s in a chromosome, the score is reduced.
 def fitness_penalization(chromosome):
 
     hypotheses = splitHypotheses(chromosome)
@@ -106,13 +108,16 @@ def fitness_penalization(chromosome):
 
     oneCount = chromosome.count(1)
 
-    if (oneCount > (FEATURES + 0.5*RULESIZE)):
+    length = len(chromosome)
+
+    #Penalizes if there are too many 1s in an individual.
+    if oneCount > (FEATURES + 0.5*length):
         score *= 0.2
     
-    if correct < 0 or len(chromosome) > 62*20: # or len(chromosome) < 62*2:
+    if correct < 0 or length > 62*20:
         score = 0.0
 
-    return score # * float(len(chromosome)) (factor a multiplicar) 
+    return score
 
 #Verifies if a set of hypothesis classify correctly an example of the data set.
 def classify(data,best):

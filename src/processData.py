@@ -6,9 +6,11 @@ import random
 MAX = 30000
 MIN = -1
 
+#Finds max and min values.
 def findMinMax(minA,maxA,a):
     return min(minA,a),max(maxA,a)
 
+#Reads data from file and processes it into the correct format.
 def processData(fileName):
 
     data = []
@@ -48,6 +50,7 @@ def processData(fileName):
 
     return processed
 
+#Turns procssed data from file into lists of bits.
 def getData(fileName):
 
     rawData = processData(fileName)
@@ -82,7 +85,7 @@ def getData(fileName):
 
     return data
 
-
+#Divides data into training and testing sets.
 def chooseData(data):
 
     size = len(data)
@@ -98,7 +101,7 @@ def chooseData(data):
 
     return lst, data
 
-
+#Saves divided training and testing data into files.
 def saveData(train,test,extension):
 
     trainFile = "../data/train/"+extension
@@ -111,6 +114,7 @@ def saveData(train,test,extension):
         json.dump(test,f)
 
 
+#Saves results from testing.
 def saveResults(file,result,correct,timestr):
     
     data = []
@@ -126,16 +130,3 @@ def saveResults(file,result,correct,timestr):
         entry = {'time': timestr,'correct': correct,'hypothesis': result}
         data.append(entry)
         json.dump(data,f)
-
-
-if __name__ == '__main__':
-    data = processData("../data/crx.data")
-
-    for example in data:
-
-        for element in example:
-
-            if element == "?":
-                print example
-                break
-

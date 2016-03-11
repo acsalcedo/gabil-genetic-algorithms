@@ -21,7 +21,7 @@ def printError():
     print "\nPenalization:"
     print "\t0 -> No penalization"
     print "\t1 -> Penalization"
-    print "All parameters are optional except the input file."
+    print "All parameters are optional except the input files."
     print
     sys.exit(2)
 
@@ -34,10 +34,10 @@ def main(argv):
         print "\nIncorrect call. Please try again."
         printError()
 
+    inputPositiveFile,inputNegativeFile = None,None
     parentSelection,survivorSelection = 1,0
     mutationRate,crossoverRate = 0.01,0.8
     numGenerations = 1000
-    inputPositiveFile,inputNegativeFile = None,None
     penalize = False
     population = 20
 
@@ -65,7 +65,6 @@ def main(argv):
                 population = int(arg)
         except ValueError:
             pass
-
 
     if inputPositiveFile is None:
         print "\nPlease enter an input file with the positive classes."
@@ -101,10 +100,11 @@ def main(argv):
 
     genome.crossover.set(crossover)
 
-    #Reads rules from file
+    #Reads rules from file.
     dataPositive = getData(filePathPositive)
     dataNegative = getData(filePathNegative)
     
+    #Seperates training and testing data.
     trainPositive,testPositive = chooseData(dataPositive)
     trainNegative,testNegative = chooseData(dataNegative)
 
@@ -115,13 +115,12 @@ def main(argv):
 
     extension = timestr+"_cross"+str(crossoverRate)+"_mut"+str(mutationRate) \
     + "_par"+str(parentSelection)+"_surv"+str(survivorSelection)+"_pop"+str(population) \
-    + "_gen"+str(numGenerations)
+    + "_gen"+str(numGenerations) + "_penal"+str(penalize)
 
     saveData(trainData,testData,extension)
 
     setDataSet(trainData,testData)
     ga = GSimpleGA.GSimpleGA(genome)
-    # ga = GSimpleGA.GSimpleGA(genome,seed=39)
     ga.setGenerations(numGenerations)
     ga.setPopulationSize(population)
     ga.setMutationRate(mutationRate)
@@ -169,19 +168,9 @@ def main(argv):
 
     testFile = testFolder+"cross"+str(crossoverRate)+"_mut"+str(mutationRate) \
     + "_par"+str(parentSelection)+"_surv"+str(survivorSelection)+"_pop"+str(population) \
-    + "_gen"+str(numGenerations)
+    + "_gen"+str(numGenerations) + "_penal"+str(penalize)
 
     saveResults(testFile,best.genomeList,correct,timestr)
-
-
-
-    # with open(testFile, mode='r') as f:
-    #     data = json.load(f)
-    #     avg = 0
-    #     for example in data:
-    #         avg += example['correct']
-
-    #     print avg
 
 if __name__ == '__main__':
     main(sys.argv[1:])
